@@ -131,6 +131,7 @@ def runBot(pagesToGet, Callbacks, didAlready, UndoCallbacks, automatically_revie
     i = 0
     while True:
         finished_callbacks = [c.called for c in Callbacks]
+        finished_callbacks.extend( [c.called for c in UndoCallbacks] )
         print "Waiting for all calls to finish (%s out of %s have finished)" % ( 
             sum(finished_callbacks), len(finished_callbacks) )
         if not all(finished_callbacks):
