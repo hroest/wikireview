@@ -15,6 +15,9 @@ from xml.dom import minidom   #XML Parsing for API
 import socket, time, Queue
 import threading
 
+toolserver_url = 'https://tools.wmflabs.org'
+hroest_url = toolserver_url + '/hroest/'
+
 def send_request(webpage):
     request = urllib2.Request(webpage.encode('utf8'))
     request.add_header('User-Agent',
@@ -42,8 +45,7 @@ def getAllUnreviewed():
     This function uses the toolserver to get these pages, using the tool by hroest 
     """
 
-    hroest = 'http://toolserver.org/~hroest/cgi-bin/bot_only/all_unflagged.py'
-    webpage = hroest
+    webpage = hroest_url + 'cgi-bin/bot_only/all_unflagged.py'
     try:
         data = send_request( webpage)
     except:
@@ -72,8 +74,8 @@ def getAllUnreviewedinCat(cat_name, depth=1, sortby='title', exclude = ''):
     This function uses the toolserver to get these pages, using the tool by hroest 
     """
 
-    hroest = 'http://toolserver.org/~hroest/flagged.php'
-    cat_temp = Template('%s?category=$cat&depth=$depth' % hroest +
+    webpage = hroest_url + 'flagged.php'
+    cat_temp = Template('%s?category=$cat&depth=$depth' % webpage +
         '&sortby=$sortby&exclude=$exclude&doit=Los!' )
     webpage = cat_temp.substitute(cat=urllib.quote_plus(cat_name), depth=depth,
                       sortby = sortby, exclude = exclude)
