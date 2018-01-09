@@ -6,7 +6,10 @@ UndoPAge
 code to perform the undo-action for a given series of revisions
 """
 
-import wikipedia as pywikibot
+# Importing pywikibot
+import pywikibot
+import api
+
 import threading, Queue
 from xml.dom import minidom   #XML Parsing for API
 from ReviewPage import review
@@ -98,8 +101,8 @@ def undo(pagetitle, revisionOld, revisionNew, comment = '', getagain = False):
             'token'         : pywikibot.getSite().getToken(),
             'summary'       : comment,
     }
-    address = pywikibot.getSite().family.api_address(pywikibot.getSite().lang)
-    response, data = pywikibot.getSite().postForm(address, predata=predata)
+    address = pywikibot.getSite().family.apipath(pywikibot.getSite().lang)
+    data = api.postForm(pywikibot.getSite(), address, predata=predata)
     dom = minidom.parseString(data.encode('utf8'))
 
     # print('undo data posted, page %s' % pagetitle)

@@ -7,10 +7,12 @@ Code to get unreviewed pages from Wikipedia (by category or all)
 """
 
 import re
-import wikipedia as pywikibot
 from string import Template
 import urllib, urllib2  #Internet libs
 from xml.dom import minidom   #XML Parsing for API
+
+# Importing pywikibot
+import pywikibot
 
 import socket, time, Queue
 import threading
@@ -214,7 +216,7 @@ def RetrieveHistoryWorker():
     """Daemon; take pages from the queue and get the latest and the
     last reviewed version as well as the comments for the revision.
     It will get a diffobject and put this one on the review_done queue."""
-    print('started retrieving daemon')
+    print('started RetrieveHistoryWorker (retrieving daemon)')
     while True:
         page = review_not_done.get()
         if page is None:
@@ -230,7 +232,7 @@ def RetrieveHistoryWorker():
             if page.pending_since == -1: page.pending_since  = diffobject.latestTimestamp
             review_done.put( diffobject )
             error = None
-        except Exception, error:
+        except Exception as error:
             print('Encountered an error when retrieving full revision history for "%s":' % (page.title))
             print error
             pass
