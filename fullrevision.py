@@ -5,7 +5,10 @@ Code to get access to the full history of an page
 TODO: implement query-continue
 """
 
-import wikipedia as pywikibot
+# Importing pywikibot
+import pywikibot
+import api
+
 from xml.dom import minidom   #XML Parsing for API
 
 class TextDiff:
@@ -40,7 +43,7 @@ def getUnreviewedandComments(pageTitle, revStart = '', revEnd= ''):
     the id and timestamp of the latest revision.
     """
 
-    response, data = getFullHistory(pageTitle, revStart, revEnd)
+    data = getFullHistory(pageTitle, revStart, revEnd)
     dom = minidom.parseString(data.encode('utf8'))
     query_continue = dom.getElementsByTagName('query-continue')
     members = dom.getElementsByTagName('rev')
@@ -87,11 +90,14 @@ def getFullHistory(pageTitle, revEnd = '', revStart= ''):
                 'prop'      : 'revisions',
                 'rvprop'    : 'ids|timestamp|user|comment|content',
                 'rvendid'   : str(revEnd),
-                'titles'    : pageTitle
+                'titles'    : pageTitle.encode("utf8")
     }
-    #sometimes we don't know the number of the newest revision
-    #it should be set to -1 and will not be considered
-    if not revStart == -1: predata['rvstartid'] = str(revStart)
-    address = pywikibot.getSite().family.api_address(pywikibot.getSite().lang)
-    return pywikibot.getSite().postForm(address, predata=predata)
+
+    # sometimes we don't know the number of the newest revision
+    # it should be set to -1 and will not be considered
+    if not revStart == -1:
+        predata['rvstartid'] = str(revStart)
+
+    address = pywikibot.getSite().family.apipath(pywikibot.getSite().lang)
+    return api.postForm(pywikibot.getSite(), address, predata=predata)
 
