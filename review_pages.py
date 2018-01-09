@@ -21,7 +21,12 @@ Arguments for the Review Bot:
 import threading
 import socket, time, Queue
 
-import wikipedia as pywikibot 
+# Importing pywikibot
+import pywikibot
+from pywikibot import pagegenerators
+from pywikibot import xmlreader
+from pywikibot.page import Category
+
 import UnreviewedPages
 import ReviewPage
 import UndoPage
@@ -246,6 +251,9 @@ def main(*args):
 
     print "I found %s pages (out of %s) to review in %s s using a depth of %s" % (
         pagesToGet.qsize(), len(unstable), end - start, depth)
+
+    # ensure that we are logged in
+    pywikibot.getSite().login()
 
     runBot(pagesToGet, Callbacks, didAlready, UndoCallbacks, automatically_reviewed)
 
