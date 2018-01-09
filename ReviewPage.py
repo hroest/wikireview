@@ -6,8 +6,14 @@ ReviewPage
 code to perform the review-action for a given revision
 """
 
-import wikipedia as pywikibot
 import threading, Queue
+import api
+
+# Importing pywikibot
+import pywikibot
+
+# ensure that we are logged in
+pywikibot.getSite().login()
 
 def ReviewWorker():
     """Review worker to work on queue
@@ -77,13 +83,16 @@ def review(revisionID, comment = '', getagain = False):
                 'token'         :  pywikibot.getSite().getToken(getagain = getagain),
                 'comment'       :  comment,
     }
-    address = pywikibot.getSite().family.api_address(pywikibot.getSite().lang)
 
-    response, data = pywikibot.getSite().postForm(address, predata=predata)
+    address = pywikibot.getSite().family.apipath(pywikibot.getSite().lang)
+    data = api.postForm( pywikibot.getSite(), address, predata)
 
     if data.find('review result=\"Success\"') == -1:
         if not data.find('Invalid token') == -1:
-            if getagain: raise pywikibot.Error('Invalid Token')
-            else: review(revisionID, comment = '', getagain = True)
-        else: raise pywikibot.Error('Review unsuccessful %s' %data)
+            if getagain:
+                raise pywikibot.Error('Invalid Token')
+            else:
+                review(revisionID, comment = '', getagain = True)
+        else:
+            raise pywikibot.Error('Review unsuccessful %s' %data)
 
