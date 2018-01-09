@@ -1,5 +1,5 @@
 
-def postForm(site, address, predata):
+def postForm(site, address, predata, method="POST"):
     # replaces:
     # data = pywikibot.getSite().postForm(address, predata=predata)
 
@@ -9,7 +9,7 @@ def postForm(site, address, predata):
     from urllib import urlencode
 
     urldata = urlencode(predata)
-    data = http.request(site, uri=address, method="POST", body=urldata)
+    data = http.request(site, uri=address, method=method, body=urldata)
     return data
 
 
